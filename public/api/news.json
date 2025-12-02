@@ -1,0 +1,116 @@
+{
+  "topStories": [
+    {
+      "category": "Top Stories",
+      "title": "Netanyahu says he hopes to announce hostages' release in days and vows Hamas will be disarmed",
+      "description": "The Israeli prime minister's comments come after Hamas agreed to release hostages under a US-proposed peace plan.",
+      "time": "",
+      "region": "",
+      "url": "https://www.bbc.com/news/live/cn0xvnxqj2xt",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/5e94/live/7548e480-a112-11f0-807b-c1a7ae4b635d.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Shock in Gaza as Trump appears to welcome Hamas response to US peace plan",
+      "description": "Hamas agreed to release the hostages and to the idea of handing over governing Gaza to Palestinian technocrats, but did not give a clear response to many other elements.",
+      "time": "6 hrs ago",
+      "region": "",
+      "url": "https://www.bbc.com/news/articles/c15k199j1x3o",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/5e94/live/7548e480-a112-11f0-807b-c1a7ae4b635d.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Sanae Takaichi set to become Japan's first female prime minister",
+      "description": "Takaichi is a long-time admirer of Margaret Thatcher, but many female voters do not see her as an advocate for progress.",
+      "time": "14 hrs ago",
+      "region": "Asia",
+      "url": "https://www.bbc.com/news/articles/cx2pmy7m72lo",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/9b87/live/744acaa0-a0f0-11f0-9eb0-91e02c1733f7.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Georgia protesters try to storm Tbilisi presidential palace",
+      "description": "Police used pepper spray to disperse demonstrators amid growing turmoil in the Caucasus country.",
+      "time": "3 hrs ago",
+      "region": "Europe",
+      "url": "https://www.bbc.com/news/articles/ce86kgnj7zro",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/323f/live/91f80ab0-a082-11f0-bb47-b30225268691.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Hope and fear for hostage families after Hamas response to Gaza peace plan",
+      "description": "Families describe a 'fragile situation', with negotiations between Israel and Hamas expected to resume.",
+      "time": "5 hrs ago",
+      "region": "Middle East",
+      "url": "https://www.bbc.com/news/articles/cly9e6mnve9o",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/c2dd/live/0727e8c0-a135-11f0-a9f1-8d9167fcc08f.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "'I love you, I'm sorry': What Sean 'Diddy' Combs did the moment he learned his sentence",
+      "description": "It was a more subdued message from three months ago when Combs told his family he was 'coming home'.",
+      "time": "22 hrs ago",
+      "region": "",
+      "url": "https://www.bbc.com/news/articles/c62z19lpwd2o",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/2df8/live/229cc4c0-a0a6-11f0-a678-e375131d5a07.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Taylor Swift says diss track is 'love letter to someone who hates me'",
+      "description": "Fans are convinced the pop star's song Actually Romantic is a response to a Charli XCX track.",
+      "time": "8 hrs ago",
+      "region": "Culture",
+      "url": "https://www.bbc.com/news/articles/ckg24xvyzxwo",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/dd7e/live/3de510a0-a116-11f0-b741-177e3e2c2fc7.jpg.webp"
+    },
+    {
+      "category": "Top Stories",
+      "title": "Trump's Grim Reaper - from Project 2025 to shutdown enforcer",
+      "description": "The Office of Management and Budget boss may not be a household name, but he's a key figure in Washington's shutdown.",
+      "time": "23 hrs ago",
+      "region": "US & Canada",
+      "url": "https://www.bbc.com/news/articles/c059ydyqe19o",
+      "image": "https://ichef.bbci.co.uk/news/480/cpsprodpb/323f/live/91f80ab0-a082-11f0-bb47-b30225268691.jpg.webp"
+    }
+  ],
+  "trending": [
+    {
+      "title": "Global Summit 2025: Leaders Address Climate Change",
+      "img": "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=800&q=60"
+    },
+    {
+      "title": "Tech Giants Unveil Breakthrough AI Innovations",
+      "img": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=60"
+    },
+    {
+      "title": "Sports Update: The Championship Thriller Ends in Style",
+      "img": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=60"
+    },
+    {
+      "title": "Sports Update: The Championship Thriller Ends in Style",
+      "img": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=60"
+    },
+    {
+      "title": "Sports Update: The Championship Thriller Ends in Style",
+      "img": "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=60"
+    }
+  ],
+  "techArticles": [
+    {
+      "title": "AI Models Break New Barriers in Healthcare",
+      "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1600&q=80"
+    },
+    {
+      "title": "Quantum Computing Becomes Reality",
+      "image": "https://images.unsplash.com/photo-1504386106331-3e4e71712b38?auto=format&fit=crop&w=1600&q=80"
+    },
+    {
+      "title": "AI Models Break New Barriers in Healthcare",
+      "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1600&q=80"
+    },
+    {
+      "title": "Quantum Computing Becomes Reality",
+      "image": "https://images.unsplash.com/photo-1504386106331-3e4e71712b38?auto=format&fit=crop&w=1600&q=80"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Newspaper, TrendingUp, Laptop, Users } from 'lucide-react';
-import { fetchNews } from '../features/news/newsSlice';
-import { hasValidImage } from '../utils/imageHelpers';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Newspaper, TrendingUp, Laptop, Users } from "lucide-react";
+import { fetchNews } from "../features/news/newsSlice";
+import { hasValidImage } from "../utils/imageHelpers";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -21,8 +21,11 @@ export default function Home() {
             <div className="animate-pulse">
               <div className="h-64 bg-gradient-to-r from-blue-100 to-blue-200 rounded-3xl mb-8 shadow-lg"></div>
               <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-48 bg-gradient-to-r from-blue-50 to-white rounded-3xl shadow-md"></div>
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-48 bg-gradient-to-r from-blue-50 to-white rounded-3xl shadow-md"
+                  ></div>
                 ))}
               </div>
             </div>
@@ -102,55 +105,66 @@ export default function Home() {
 
             <div className="pr-3">
               <div className="space-y-5">
-                {newsData.topStories.filter(hasValidImage).slice(0, 5).map((story, idx) => (
-                  <article
-                    key={idx}
-                    className="flex flex-col md:flex-row bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
-                  >
-                    <img
-                      src={story.image}
-                      alt={story.title}
-                      className="w-full md:w-56 h-48 object-cover flex-shrink-0"
-                    />
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="inline-block bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
-                          {story.category || story.section || 'Top Stories'}
+                {newsData.topStories
+                  .filter(hasValidImage)
+                  .slice(0, 5)
+                  .map((story, idx) => (
+                    <article
+                      key={idx}
+                      className="flex flex-col md:flex-row bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
+                    >
+                      <img
+                        src={story.image}
+                        alt={story.title}
+                        className="w-full md:w-56 h-48 object-cover flex-shrink-0"
+                      />
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="inline-block bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+                            {story.category || story.section || "Top Stories"}
+                          </div>
+                          <h4 className="mt-3 text-xl font-bold leading-tight text-blue-900">
+                            <a
+                              href={story.link || story.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:text-blue-600 transition-colors"
+                            >
+                              {story.title}
+                            </a>
+                          </h4>
+                          {story.description && (
+                            <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                              {story.description}
+                            </p>
+                          )}
                         </div>
-                        <h4 className="mt-3 text-xl font-bold leading-tight text-blue-900">
+
+                        <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+                          <div className="flex items-center gap-4">
+                            {story.source && (
+                              <span className="flex items-center gap-1">
+                                📍 {story.source}
+                              </span>
+                            )}
+                            {story.date && (
+                              <span className="flex items-center gap-1">
+                                🕒 {story.date}
+                              </span>
+                            )}
+                          </div>
                           <a
                             href={story.link || story.url}
                             target="_blank"
                             rel="noreferrer"
-                            className="hover:text-blue-600 transition-colors"
+                            className="text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
                           >
-                            {story.title}
+                            Read more →
                           </a>
-                        </h4>
-                        {story.description && (
-                          <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                            {story.description}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                        <div className="flex items-center gap-4">
-                          {story.source && <span className="flex items-center gap-1">📍 {story.source}</span>}
-                          {story.date && <span className="flex items-center gap-1">🕒 {story.date}</span>}
                         </div>
-                        <a
-                          href={story.link || story.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
-                        >
-                          Read more →
-                        </a>
                       </div>
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  ))}
               </div>
             </div>
 
@@ -173,24 +187,29 @@ export default function Home() {
 
               <div className="overflow-x-auto pb-2 -mx-2 pr-5 pl-3">
                 <div className="flex gap-5">
-                  {newsData.trending.filter(hasValidImage).slice(0, 5).map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex-shrink-0 w-[300px] bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="h-44 w-full object-cover"
-                      />
-                      <div className="p-5">
-                        <h4 className="font-bold text-blue-900 leading-snug">{item.title}</h4>
-                        <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
-                          Read More →
-                        </button>
+                  {newsData.trending
+                    .filter(hasValidImage)
+                    .slice(0, 5)
+                    .map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex-shrink-0 w-[300px] bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
+                      >
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="h-44 w-full object-cover"
+                        />
+                        <div className="p-5">
+                          <h4 className="font-bold text-blue-900 leading-snug">
+                            {item.title}
+                          </h4>
+                          <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                            Read More →
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
               <div className="flex justify-end mt-6 pr-6">
@@ -211,24 +230,35 @@ export default function Home() {
                 Politics
               </h3>
               <div className="grid md:grid-cols-2 gap-6">
-                {newsData.politics.filter(hasValidImage).slice(0, 1).map((item, i) => (
-                  <div key={i} className="bg-white rounded-3xl p-6 shadow-md border border-blue-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="rounded-2xl shadow-lg mb-4 w-full h-56 object-cover"
-                    />
-                    <h4 className="text-xl font-bold mb-3 text-blue-900">{item.title}</h4>
-                    {item.description && (
-                      <p className="text-gray-600 leading-relaxed">
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
-                ))}
+                {newsData.politics
+                  .filter(hasValidImage)
+                  .slice(0, 1)
+                  .map((item, i) => (
+                    <div
+                      key={i}
+                      className="bg-white rounded-3xl p-6 shadow-md border border-blue-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="rounded-2xl shadow-lg mb-4 w-full h-56 object-cover"
+                      />
+                      <h4 className="text-xl font-bold mb-3 text-blue-900">
+                        {item.title}
+                      </h4>
+                      {item.description && (
+                        <p className="text-gray-600 leading-relaxed">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 <div className="space-y-4 bg-white rounded-3xl p-6 shadow-md border border-blue-100">
                   {newsData.politics.slice(1, 4).map((item, i) => (
-                    <div key={i} className="border-b border-blue-100 pb-4 last:border-0 last:pb-0 text-blue-900 font-medium hover:text-blue-600 cursor-pointer transition-colors">
+                    <div
+                      key={i}
+                      className="border-b border-blue-100 pb-4 last:border-0 last:pb-0 text-blue-900 font-medium hover:text-blue-600 cursor-pointer transition-colors"
+                    >
                       {item.title}
                     </div>
                   ))}
@@ -254,26 +284,29 @@ export default function Home() {
 
               <div className="overflow-x-auto pb-2 -mx-2 pr-5 pl-3">
                 <div className="flex space-x-5">
-                  {newsData.techArticles.filter(hasValidImage).slice(0, 5).map((article, i) => (
-                    <div
-                      key={i}
-                      className="inline-block align-top max-w-[300px] flex-shrink-0 bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
-                    >
-                      <img
-                        src={article.image}
-                        alt={article.title}
-                        className="h-48 w-full object-cover"
-                      />
-                      <div className="p-5">
-                        <h4 className="font-bold text-blue-900 leading-snug">
-                          {article.title}
-                        </h4>
-                        <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
-                          Read More →
-                        </button>
+                  {newsData.techArticles
+                    .filter(hasValidImage)
+                    .slice(0, 5)
+                    .map((article, i) => (
+                      <div
+                        key={i}
+                        className="inline-block align-top max-w-[300px] flex-shrink-0 bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-blue-100 hover:border-blue-300 transform hover:-translate-y-1"
+                      >
+                        <img
+                          src={article.image}
+                          alt={article.title}
+                          className="h-48 w-full object-cover"
+                        />
+                        <div className="p-5">
+                          <h4 className="font-bold text-blue-900 leading-snug">
+                            {article.title}
+                          </h4>
+                          <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                            Read More →
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
               <div className="flex justify-end mt-6 pr-6">
@@ -289,29 +322,41 @@ export default function Home() {
         <aside className="w-80 hidden lg:block border-l-2 border-blue-100 pl-6">
           <div className="sticky top-8">
             <div className="mb-8 bg-white rounded-3xl p-6 shadow-md border border-blue-100">
-              <h4 className="text-xl font-bold mb-5 text-blue-900">Most Read</h4>
+              <h4 className="text-xl font-bold mb-5 text-blue-900">
+                Most Read
+              </h4>
               <ul className="space-y-4 text-gray-700">
                 <li className="hover:text-blue-600 cursor-pointer transition-colors font-medium flex items-center gap-2 group">
-                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                   Global Economy Insights
                 </li>
                 <li className="hover:text-blue-600 cursor-pointer transition-colors font-medium flex items-center gap-2 group">
-                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                   AI in Daily Life
                 </li>
                 <li className="hover:text-blue-600 cursor-pointer transition-colors font-medium flex items-center gap-2 group">
-                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                   Renewable Energy Push
                 </li>
                 <li className="hover:text-blue-600 cursor-pointer transition-colors font-medium flex items-center gap-2 group">
-                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="text-blue-600 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                   New Discoveries in Space
                 </li>
               </ul>
             </div>
 
             <div className="bg-white rounded-3xl p-6 shadow-md border border-blue-100">
-              <h5 className="font-bold mb-5 text-blue-900 text-lg">Editor's Picks</h5>
+              <h5 className="font-bold mb-5 text-blue-900 text-lg">
+                Editor's Picks
+              </h5>
               <div className="space-y-5">
                 <div className="flex gap-3 hover:bg-blue-50 p-2 rounded-2xl transition-colors cursor-pointer">
                   <img
@@ -324,7 +369,8 @@ export default function Home() {
                       Environment
                     </div>
                     <div className="font-bold text-sm text-blue-900 leading-snug">
-                      The Silent Crisis: How Deforestation is Changing Our Planet
+                      The Silent Crisis: How Deforestation is Changing Our
+                      Planet
                     </div>
                   </div>
                 </div>
@@ -339,7 +385,8 @@ export default function Home() {
                       Culture
                     </div>
                     <div className="font-bold text-sm text-blue-900 leading-snug">
-                      The Culinary Revolution: A Look Inside the World's Top Kitchens
+                      The Culinary Revolution: A Look Inside the World's Top
+                      Kitchens
                     </div>
                   </div>
                 </div>

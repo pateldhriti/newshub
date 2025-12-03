@@ -1,11 +1,18 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setSelectedSection } from '../features/news/allNewsSlice';
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedSection } from "../features/news/allNewsSlice";
+import { logout } from "../features/auth/authSlice";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
 
   // Handle section navigation
   const handleSectionClick = (section, path) => {
@@ -33,56 +40,88 @@ function Navbar() {
           </div>
           <h1 className="text-xl font-bold">NewsToday</h1>
 
+          {/* Auth Section - Moved to Left (Removed) */}
+
           <nav className="hidden md:flex items-center gap-6 ml-6 text-sm">
-            <Link
-              to="/"
-              className="hover:text-blue-600 transition-colors"
-            >
+            <Link to="/" className="hover:text-blue-600 transition-colors">
               Home
             </Link>
 
             <button
-              onClick={() => handleSectionClick('Top Stories', '/news')}
+              onClick={() => handleSectionClick("Top Stories", "/news")}
               className="hover:text-blue-600 transition-colors"
             >
               All News
             </button>
 
             <button
-              onClick={() => handleSectionClick('MORE TO EXPLORE', '/explore')}
+              onClick={() => handleSectionClick("MORE TO EXPLORE", "/explore")}
               className="hover:text-blue-600 transition-colors"
             >
               World
             </button>
 
             <button
-              onClick={() => handleSectionClick('politics', '/politics')}
+              onClick={() => handleSectionClick("politics", "/politics")}
               className="hover:text-blue-600 transition-colors"
             >
               Politics
             </button>
 
             <button
-              onClick={() => handleSectionClick('Technology', '/tech')}
+              onClick={() => handleSectionClick("Technology", "/tech")}
               className="hover:text-blue-600 transition-colors"
             >
               Tech
             </button>
 
             <button
-              onClick={() => handleSectionClick('Sport', '/sport')}
+              onClick={() => handleSectionClick("Sport", "/sport")}
               className="hover:text-blue-600 transition-colors"
             >
               Sport
             </button>
 
             <button
-              onClick={() => handleSectionClick('TRENDING', '/trending')}
+              onClick={() => handleSectionClick("TRENDING", "/trending")}
               className="hover:text-blue-600 transition-colors"
             >
               Trending
             </button>
           </nav>
+        </div>
+
+        {/* Auth Section - Moved to Right */}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link
+                to="/login"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Login
+              </Link>
+              <span className="text-gray-300">|</span>
+              <Link
+                to="/register"
+                className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Register
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Production build output
+dist/
+
+# Vite cache
+.vite/
+
+# Logs
+*.log
+
+# IDE files
+.vscode/
+.idea/
+

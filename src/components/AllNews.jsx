@@ -191,6 +191,22 @@ export default function AllNews() {
     [dispatch, fetchSpellCheckSuggestions]
   );
 
+  /**
+   * Track search for recommendations
+   */
+  const trackSearch = useCallback(async (query) => {
+    if (user && query) {
+      try {
+        await axios.post("http://localhost:8080/api/recommendations/track-search", {
+          userId: user.email,
+          query: query
+        });
+      } catch (error) {
+        console.error("Error tracking search:", error);
+      }
+    }
+  }, [user]);
+
   const handleSuggestionClick = useCallback(
     (suggestion) => {
       const term =
@@ -200,8 +216,9 @@ export default function AllNews() {
       setSelectedSuggestionIndex(-1);
       setShowSpellCheck(false);
       dispatch(incrementSearchFrequency(term));
+      trackSearch(term);
     },
-    [dispatch]
+    [dispatch, trackSearch]
   );
 
   /**
@@ -213,15 +230,19 @@ export default function AllNews() {
       setShowSpellCheck(false);
       dispatch(clearSuggestions());
       dispatch(incrementSearchFrequency(correctedText));
+      trackSearch(correctedText);
     },
-    [dispatch]
+    [dispatch, trackSearch]
   );
+
+
 
   const handleKeyDown = useCallback(
     (e) => {
       if (!showSuggestions || suggestions.length === 0) {
         if (e.key === "Enter" && searchQuery.trim() !== "") {
           dispatch(incrementSearchFrequency(searchQuery.trim()));
+          trackSearch(searchQuery.trim());
           setShowSpellCheck(false);
         }
         return;
@@ -247,6 +268,7 @@ export default function AllNews() {
             handleSuggestionClick(suggestion);
           } else if (searchQuery.trim() !== "") {
             dispatch(incrementSearchFrequency(searchQuery.trim()));
+            trackSearch(searchQuery.trim());
             dispatch(clearSuggestions());
             setShowSpellCheck(false);
           }

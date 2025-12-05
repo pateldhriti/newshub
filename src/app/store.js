@@ -3,6 +3,7 @@ import newsReducer from "../features/news/newsSlice";
 import allNewsReducer from "../features/news/allNewsSlice";
 import authReducer from "../features/auth/authSlice";
 import summarizationReducer from "../features/summarization/summarizationSlice";
+import recommendationReducer from "../features/recommendation/recommendationSlice";
 
 // Configure the Redux store
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
     allNews: allNewsReducer,
     auth: authReducer,
     summarization: summarizationReducer,
+    recommendations: recommendationReducer,
   },
 });
 

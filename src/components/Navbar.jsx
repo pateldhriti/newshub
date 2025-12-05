@@ -140,6 +140,16 @@ function Navbar() {
             >
               Trending
             </button>
+
+            {user && (
+              <Link
+                to="/recommendations"
+                className="flex items-center gap-1 text-purple-600 hover:text-purple-700 transition-colors font-semibold"
+              >
+                <Sparkles size={16} />
+                For You
+              </Link>
+            )}
           </nav>
         </div>
 

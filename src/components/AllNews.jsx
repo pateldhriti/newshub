@@ -28,6 +28,7 @@ import {
   clearSuggestions,
   incrementSearchFrequency,
 } from "../features/news/allNewsSlice";
+import { trackArticleClick } from "../features/recommendation/recommendationSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SummarizeModal from "./SummarizeModal";
@@ -48,6 +49,7 @@ export default function AllNews() {
     suggestions,
     showSuggestions,
   } = useSelector((state) => state.allNews);
+  const { user } = useSelector((state) => state.auth);
 
   const observerTarget = useRef(null);
   const isLoadingRef = useRef(false);
@@ -536,6 +538,18 @@ export default function AllNews() {
                         href={item.link || item.url}
                         target="_blank"
                         rel="noreferrer"
+                        onClick={() => {
+                          if (user) {
+                            dispatch(
+                              trackArticleClick({
+                                userId: user.email,
+                                articleId: item.title,
+                                articleTitle: item.title,
+                                section: item.section || "News",
+                              })
+                            );
+                          }
+                        }}
                       >
                         {item.title}
                       </a>

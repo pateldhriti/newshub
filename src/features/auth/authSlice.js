@@ -69,9 +69,13 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.user;
+        // Construct user object from flat response
+        state.user = {
+          email: action.payload.email,
+          name: action.payload.name
+        };
         state.token = action.payload.token;
-        localStorage.setItem("authUser", JSON.stringify(action.payload.user));
+        localStorage.setItem("authUser", JSON.stringify(state.user));
         localStorage.setItem("authToken", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -85,9 +89,13 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.user = action.payload.user;
+        // Construct user object from flat response
+        state.user = {
+          email: action.payload.email,
+          name: action.payload.name
+        };
         state.token = action.payload.token;
-        localStorage.setItem("authUser", JSON.stringify(action.payload.user));
+        localStorage.setItem("authUser", JSON.stringify(state.user));
         localStorage.setItem("authToken", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {

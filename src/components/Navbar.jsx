@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSection } from "../features/news/allNewsSlice";
 import { logout } from "../features/auth/authSlice";
+import { User, LogOut } from "lucide-react";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
+    setIsDropdownOpen(false);
     dispatch(logout());
     navigate("/login");
   };
@@ -18,6 +34,10 @@ function Navbar() {
   const handleSectionClick = (section, path) => {
     dispatch(setSelectedSection(section));
     navigate(path);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -94,16 +114,57 @@ function Navbar() {
         {/* Auth Section - Moved to Right */}
         <div className="flex items-center gap-3">
           {user ? (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-              </div>
+            <div className="relative" ref={dropdownRef}>
+              {/* Avatar Button */}
               <button
-                onClick={handleLogout}
-                className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
+                onClick={toggleDropdown}
+                className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold text-sm shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                aria-label="User menu"
               >
-                Logout
+                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
               </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden animate-fadeIn z-50">
+                  {/* User Info Section */}
+                  <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white flex items-center justify-center font-bold text-sm">
+                        {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                          {user.name || "User"}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          {user.email || "user@example.com"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-1">
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <User size={18} className="text-blue-600 dark:text-blue-400" />
+                      <span className="font-medium">My Profile</span>
+                    </Link>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <LogOut size={18} />
+                      <span className="font-medium">Logout</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center gap-3">

@@ -655,7 +655,7 @@ export default function AllNews() {
             )}
 
             {/* Empty State */}
-            {!loading && items.length === 0 && (
+            {!loading && items.filter(hasValidImage).length === 0 && (
               <div className="text-center py-16">
                 <Newspaper className="w-16 h-16 text-slate-400 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">
@@ -670,7 +670,7 @@ export default function AllNews() {
             )}
 
             {/* No More Items */}
-            {!loading && !hasMore && items.length > 0 && (
+            {!loading && !hasMore && items.filter(hasValidImage).length > 0 && (
               <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                 <p>You've reached the end of the news feed</p>
               </div>
@@ -679,7 +679,7 @@ export default function AllNews() {
         ) : null}
 
         {/* Pagination Controls */}
-        {!loading && items.length > 0 && (
+        {!loading && items.filter(hasValidImage).length > 0 && (
           <div className="flex justify-center items-center gap-4 py-8 mb-8">
             <button
               onClick={handlePrevPage}

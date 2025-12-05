@@ -1,13 +1,16 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Newspaper, TrendingUp, Laptop, Users, Sparkles } from "lucide-react";
+import { Newspaper, TrendingUp, Laptop, Users, Sparkles, Twitter, Facebook, Linkedin } from "lucide-react";
 import SummarizeModal from "./SummarizeModal";
 import { fetchNews } from "../features/news/newsSlice";
+import { trackArticleClick } from "../features/recommendation/recommendationSlice";
 import { hasValidImage } from "../utils/imageHelpers";
 
 export default function Home() {
   const dispatch = useDispatch();
   const { newsData, loading, error } = useSelector((state) => state.news);
+  const { user } = useSelector((state) => state.auth);
 
   const [isSummarizeModalOpen, setIsSummarizeModalOpen] = useState(false);
   const [articleToSummarize, setArticleToSummarize] = useState(null);
@@ -17,6 +20,26 @@ export default function Home() {
     setArticleToSummarize(textToSummarize);
     setIsSummarizeModalOpen(true);
   }, []);
+
+  const handleArticleClick = useCallback((article) => {
+    if (user) {
+      dispatch(trackArticleClick({
+        userId: user.email,
+        articleId: article.title, // Using title as ID for now
+        articleTitle: article.title,
+        section: article.section || article.category || "General"
+      }));
+    }
+  }, [dispatch, user]);
+
+  // Get the first top story for the hero section, or use fallback
+  const heroStory = newsData.topStories?.find(hasValidImage) || newsData.topStories?.[0] || {
+    title: "Major Breakthrough in AI Could Change the Future of Medicine",
+    description: "A new study reveals a groundbreaking AI model that can predict diseases years before symptoms appear, paving the way for preventative healthcare.",
+    image: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1600&q=80",
+    link: "#",
+    source: "Featured"
+  };
 
   useEffect(() => {
     dispatch(fetchNews());
@@ -82,8 +105,7 @@ export default function Home() {
           <section
             className="relative bg-cover bg-center text-white rounded-3xl overflow-hidden mb-8 shadow-2xl border border-blue-200"
             style={{
-              backgroundImage:
-                "linear-gradient(135deg, rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.90)), url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1600&q=80')",
+              backgroundImage: `linear-gradient(135deg, rgba(37, 99, 235, 0.85), rgba(29, 78, 216, 0.90)), url('${heroStory.image}')`,
             }}
           >
             <div className="p-10 md:p-16">
@@ -91,26 +113,23 @@ export default function Home() {
                 Featured Story
               </div>
               <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-4">
-                Major Breakthrough in AI Could Change the Future of Medicine
+                {heroStory.title}
               </h2>
-              <p className="mt-3 text-base md:text-lg text-blue-50 max-w-2xl leading-relaxed">
-                A new study reveals a groundbreaking AI model that can predict
-                diseases years before symptoms appear, paving the way for
-                preventative healthcare.
+              <p className="mt-3 text-base md:text-lg text-blue-50 max-w-2xl leading-relaxed line-clamp-3">
+                {heroStory.description}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <button className="bg-white text-blue-700 px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <a
+                  href={heroStory.link || heroStory.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => handleArticleClick(heroStory)}
+                  className="bg-white text-blue-700 px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 inline-block"
+                >
                   Read More
-                </button>
+                </a>
                 <button
-                  onClick={() =>
-                    handleSummarizeArticle({
-                      title:
-                        "Major Breakthrough in AI Could Change the Future of Medicine",
-                      description:
-                        "A new study reveals a groundbreaking AI model that can predict diseases years before symptoms appear, paving the way for preventative healthcare.",
-                    })
-                  }
+                  onClick={() => handleSummarizeArticle(heroStory)}
                   className="flex items-center gap-2 bg-blue-600/30 backdrop-blur-md border border-white/30 text-white px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-600/50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <Sparkles className="w-5 h-5" />
@@ -154,6 +173,7 @@ export default function Home() {
                               href={story.link || story.url}
                               target="_blank"
                               rel="noreferrer"
+                              onClick={() => handleArticleClick(story)}
                               className="hover:text-blue-600 transition-colors"
                             >
                               {story.title}
@@ -184,6 +204,7 @@ export default function Home() {
                               href={story.link || story.url}
                               target="_blank"
                               rel="noreferrer"
+                              onClick={() => handleArticleClick(story)}
                               className="text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
                             >
                               Read more →
@@ -243,7 +264,10 @@ export default function Home() {
                             {item.title}
                           </h4>
                           <div className="mt-4 space-y-2">
-                            <button className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                            <button
+                              onClick={() => handleArticleClick(item)}
+                              className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
+                            >
                               Read More →
                             </button>
                             <button
@@ -294,7 +318,12 @@ export default function Home() {
                         className="rounded-2xl shadow-lg mb-4 w-full h-56 object-cover"
                       />
                       <h4 className="text-xl font-bold mb-3 text-blue-900">
-                        {item.title}
+                        <span
+                          className="hover:text-blue-600 cursor-pointer transition-colors"
+                          onClick={() => handleArticleClick(item)}
+                        >
+                          {item.title}
+                        </span>
                       </h4>
                       {item.description && (
                         <p className="text-gray-600 leading-relaxed">
@@ -319,7 +348,12 @@ export default function Home() {
                       key={i}
                       className="border-b border-blue-100 pb-4 last:border-0 last:pb-0 font-medium cursor-pointer transition-colors flex items-start justify-between gap-2 group"
                     >
-                      <span className="text-blue-900 group-hover:text-blue-600">{item.title}</span>
+                      <span
+                        className="text-blue-900 group-hover:text-blue-600"
+                        onClick={() => handleArticleClick(item)}
+                      >
+                        {item.title}
+                      </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -372,7 +406,10 @@ export default function Home() {
                             {article.title}
                           </h4>
                           <div className="mt-4 space-y-2">
-                            <button className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                            <button
+                              onClick={() => handleArticleClick(article)}
+                              className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
+                            >
                               Read More →
                             </button>
                             <button
@@ -479,11 +516,139 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-600 to-blue-700 border-t-4 border-blue-800 mt-8">
-        <div className="max-w-7xl mx-auto px-6 py-8 text-center text-white">
-          <div className="font-bold text-lg mb-2">NewsToday</div>
-          <div className="text-blue-100">
-            © {new Date().getFullYear()} NewsToday. All rights reserved.
+      <footer className="bg-gradient-to-br from-slate-900 to-blue-900 text-white mt-12">
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Brand Column */}
+            <div className="space-y-4">
+              <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <Newspaper className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-200">
+                  NewsToday
+                </span>
+              </Link>
+              <p className="text-slate-300 leading-relaxed">
+                Your trusted source for the latest global news, technology trends,
+                and in-depth analysis. Stay informed, stay ahead.
+              </p>
+              <div className="flex gap-4 pt-2">
+                {/* Social Icons */}
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition-all hover:-translate-y-1"
+                >
+                  <Twitter className="w-5 h-5 text-white" />
+                </a>
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-700 flex items-center justify-center transition-all hover:-translate-y-1"
+                >
+                  <Facebook className="w-5 h-5 text-white" />
+                </a>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-500 flex items-center justify-center transition-all hover:-translate-y-1"
+                >
+                  <Linkedin className="w-5 h-5 text-white" />
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-lg font-bold mb-6 text-blue-200">
+                Quick Links
+              </h4>
+              <ul className="space-y-3">
+                {[
+                  { name: "Home", path: "/" },
+                  { name: "World", path: "/world" },
+                  { name: "Technology", path: "/tech" },
+                  { name: "Sports", path: "/sports" },
+                  { name: "Trending", path: "/trending" }
+                ].map((link) => (
+                  <li key={link.name}>
+                    <button
+                      onClick={() => {
+                        if (link.name === "Home") {
+                          navigate("/");
+                        } else {
+                          // Map path to section name for dispatch
+                          const sectionMap = {
+                            "/world": "World",
+                            "/tech": "Technology",
+                            "/sports": "Sports",
+                            "/trending": "Trending"
+                          };
+                          dispatch(setSelectedSection(sectionMap[link.path]));
+                          navigate(link.path);
+                        }
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      className="text-slate-300 hover:text-white hover:translate-x-1 transition-all flex items-center gap-2"
+                    >
+                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                      {link.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div>
+              <h4 className="text-lg font-bold mb-6 text-blue-200">
+                Subscribe to Newsletter
+              </h4>
+              <p className="text-slate-300 mb-4">
+                Get the latest news and updates delivered directly to your inbox.
+              </p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  alert("Thank you for subscribing!");
+                }}
+                className="flex flex-col gap-3"
+              >
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                  className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg shadow-blue-900/20"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
+            <div>
+              © {new Date().getFullYear()} NewsToday. All rights reserved.
+            </div>
+            <div className="flex gap-6">
+              <button className="hover:text-white transition-colors">
+                Privacy Policy
+              </button>
+              <button className="hover:text-white transition-colors">
+                Terms of Service
+              </button>
+              <button className="hover:text-white transition-colors">
+                Cookie Policy
+              </button>
+            </div>
           </div>
         </div>
       </footer>

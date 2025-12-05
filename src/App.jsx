@@ -18,8 +18,12 @@ function App() {
           <Route path="/all" element={<AllNews />} />
           <Route path="/news" element={<AllNews />} />
           <Route path="/world" element={<AllNews />} />
+          <Route path="/explore" element={<AllNews />} />
           <Route path="/politics" element={<AllNews />} />
           <Route path="/tech" element={<AllNews />} />
+          <Route path="/sports" element={<AllNews />} />
+          <Route path="/sport" element={<AllNews />} />
+          <Route path="/trending" element={<AllNews />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />

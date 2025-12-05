@@ -1,12 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Newspaper, TrendingUp, Laptop, Users } from "lucide-react";
+import { Newspaper, TrendingUp, Laptop, Users, Sparkles } from "lucide-react";
+import SummarizeModal from "./SummarizeModal";
 import { fetchNews } from "../features/news/newsSlice";
 import { hasValidImage } from "../utils/imageHelpers";
 
 export default function Home() {
   const dispatch = useDispatch();
   const { newsData, loading, error } = useSelector((state) => state.news);
+
+  const [isSummarizeModalOpen, setIsSummarizeModalOpen] = useState(false);
+  const [articleToSummarize, setArticleToSummarize] = useState(null);
+
+  const handleSummarizeArticle = useCallback((article) => {
+    const textToSummarize = `${article.title}\n\n${article.description || ""}`;
+    setArticleToSummarize(textToSummarize);
+    setIsSummarizeModalOpen(true);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchNews());
@@ -88,9 +98,25 @@ export default function Home() {
                 diseases years before symptoms appear, paving the way for
                 preventative healthcare.
               </p>
-              <button className="mt-8 bg-white text-blue-700 px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                Read More
-              </button>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <button className="bg-white text-blue-700 px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  Read More
+                </button>
+                <button
+                  onClick={() =>
+                    handleSummarizeArticle({
+                      title:
+                        "Major Breakthrough in AI Could Change the Future of Medicine",
+                      description:
+                        "A new study reveals a groundbreaking AI model that can predict diseases years before symptoms appear, paving the way for preventative healthcare.",
+                    })
+                  }
+                  className="flex items-center gap-2 bg-blue-600/30 backdrop-blur-md border border-white/30 text-white px-7 py-3.5 rounded-2xl font-bold hover:bg-blue-600/50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Summarize
+                </button>
+              </div>
             </div>
           </section>
 
@@ -140,27 +166,39 @@ export default function Home() {
                           )}
                         </div>
 
-                        <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                          <div className="flex items-center gap-4">
-                            {story.source && (
-                              <span className="flex items-center gap-1">
-                                📍 {story.source}
-                              </span>
-                            )}
-                            {story.date && (
-                              <span className="flex items-center gap-1">
-                                🕒 {story.date}
-                              </span>
-                            )}
+                        <div className="mt-4 flex flex-col gap-3">
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <div className="flex items-center gap-4">
+                              {story.source && (
+                                <span className="flex items-center gap-1">
+                                  📍 {story.source}
+                                </span>
+                              )}
+                              {story.date && (
+                                <span className="flex items-center gap-1">
+                                  🕒 {story.date}
+                                </span>
+                              )}
+                            </div>
+                            <a
+                              href={story.link || story.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
+                            >
+                              Read more →
+                            </a>
                           </div>
-                          <a
-                            href={story.link || story.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1"
+                          <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleSummarizeArticle(story);
+                            }}
+                            className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-sm"
                           >
-                            Read more →
-                          </a>
+                            <Sparkles className="w-4 h-4" />
+                            AI Summarize
+                          </button>
                         </div>
                       </div>
                     </article>
@@ -204,9 +242,21 @@ export default function Home() {
                           <h4 className="font-bold text-blue-900 leading-snug">
                             {item.title}
                           </h4>
-                          <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
-                            Read More →
-                          </button>
+                          <div className="mt-4 space-y-2">
+                            <button className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                              Read More →
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleSummarizeArticle(item);
+                              }}
+                              className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-sm"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                              AI Summarize
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -251,15 +301,35 @@ export default function Home() {
                           {item.description}
                         </p>
                       )}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSummarizeArticle(item);
+                        }}
+                        className="mt-4 flex items-center justify-center gap-2 w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-sm"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        AI Summarize
+                      </button>
                     </div>
                   ))}
                 <div className="space-y-4 bg-white rounded-3xl p-6 shadow-md border border-blue-100">
                   {newsData.politics.slice(1, 4).map((item, i) => (
                     <div
                       key={i}
-                      className="border-b border-blue-100 pb-4 last:border-0 last:pb-0 text-blue-900 font-medium hover:text-blue-600 cursor-pointer transition-colors"
+                      className="border-b border-blue-100 pb-4 last:border-0 last:pb-0 font-medium cursor-pointer transition-colors flex items-start justify-between gap-2 group"
                     >
-                      {item.title}
+                      <span className="text-blue-900 group-hover:text-blue-600">{item.title}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSummarizeArticle(item);
+                        }}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-blue-600 hover:bg-blue-50 rounded-full transition-all flex-shrink-0"
+                        title="Summarize with AI"
+                      >
+                        <Sparkles size={16} />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -301,9 +371,21 @@ export default function Home() {
                           <h4 className="font-bold text-blue-900 leading-snug">
                             {article.title}
                           </h4>
-                          <button className="mt-4 text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
-                            Read More →
-                          </button>
+                          <div className="mt-4 space-y-2">
+                            <button className="text-sm text-blue-600 font-bold hover:text-blue-700 transition-colors flex items-center gap-1">
+                              Read More →
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleSummarizeArticle(article);
+                              }}
+                              className="flex items-center justify-center gap-2 w-full px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-sm"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                              AI Summarize
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -405,6 +487,15 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      {/* Summarize Modal */}
+      <SummarizeModal
+        isOpen={isSummarizeModalOpen}
+        onClose={() => {
+          setIsSummarizeModalOpen(false);
+          setArticleToSummarize(null);
+        }}
+        initialText={articleToSummarize || ""}
+      />
     </div>
   );
 }

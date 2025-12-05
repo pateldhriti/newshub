@@ -3,13 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSection } from "../features/news/allNewsSlice";
 import { logout } from "../features/auth/authSlice";
-import { User, LogOut, Moon, Sun } from "lucide-react";
+import { User, LogOut, Moon, Sun, Sparkles } from "lucide-react";
+import SummarizeModal from "./SummarizeModal";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSummarizeModalOpen, setIsSummarizeModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     // Initialize from localStorage or system preference
     const saved = localStorage.getItem('darkMode');
@@ -80,6 +82,16 @@ function Navbar() {
           </div>
           <h1 className="text-xl font-bold text-gray-900">NewsToday</h1>
 
+          {/* AI Summary Button - Moved to Left */}
+          <button
+            onClick={() => setIsSummarizeModalOpen(true)}
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 ml-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-md text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md"
+            aria-label="AI Summary"
+          >
+            <Sparkles size={16} />
+            <span>AI Summary</span>
+          </button>
+
           {/* Auth Section - Moved to Left (Removed) */}
 
           <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-gray-700">
@@ -95,14 +107,14 @@ function Navbar() {
             </button>
 
             <button
-              onClick={() => handleSectionClick("MORE TO EXPLORE", "/explore")}
+              onClick={() => handleSectionClick("World", "/world")}
               className="hover:text-blue-600 transition-colors"
             >
               World
             </button>
 
             <button
-              onClick={() => handleSectionClick("politics", "/politics")}
+              onClick={() => handleSectionClick("Politics", "/politics")}
               className="hover:text-blue-600 transition-colors"
             >
               Politics
@@ -116,20 +128,22 @@ function Navbar() {
             </button>
 
             <button
-              onClick={() => handleSectionClick("Sport", "/sport")}
+              onClick={() => handleSectionClick("Sports", "/sports")}
               className="hover:text-blue-600 transition-colors"
             >
-              Sport
+              Sports
             </button>
 
             <button
-              onClick={() => handleSectionClick("TRENDING", "/trending")}
+              onClick={() => handleSectionClick("Trending", "/trending")}
               className="hover:text-blue-600 transition-colors"
             >
               Trending
             </button>
           </nav>
         </div>
+
+
 
         {/* Dark Mode Toggle */}
         <button
@@ -218,6 +232,12 @@ function Navbar() {
           )}
         </div>
       </div>
+
+      {/* Summarize Modal */}
+      <SummarizeModal
+        isOpen={isSummarizeModalOpen}
+        onClose={() => setIsSummarizeModalOpen(false)}
+      />
     </nav>
   );
 }

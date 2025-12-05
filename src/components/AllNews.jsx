@@ -18,6 +18,7 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
+  Sparkles,
 } from "lucide-react";
 import {
   fetchAllNews,
@@ -29,6 +30,8 @@ import {
 } from "../features/news/allNewsSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import SummarizeModal from "./SummarizeModal";
+import { hasValidImage } from "../utils/imageHelpers";
 
 export default function AllNews() {
   const dispatch = useDispatch();
@@ -50,6 +53,8 @@ export default function AllNews() {
   const isLoadingRef = useRef(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const searchInputRef = useRef(null);
+  const [isSummarizeModalOpen, setIsSummarizeModalOpen] = useState(false);
+  const [articleToSummarize, setArticleToSummarize] = useState(null);
 
   // Spell check state
   const [spellCheckSuggestion, setSpellCheckSuggestion] = useState(null);
@@ -59,12 +64,14 @@ export default function AllNews() {
   const SECTION_MAP = useMemo(
     () => ({
       news: "Top Stories",
-      explore: "MORE TO EXPLORE",
+      explore: "World", // Changed from MORE TO EXPLORE
+      world: "World", // Added specific mapping
       watch: "MOST WATCHED",
       tech: "Technology",
-      politics: "politics",
-      trending: "TRENDING",
-      sport: "Sport",
+      politics: "Politics",
+      trending: "Trending",
+      sport: "Sports",
+      sports: "Sports", // Added plural mapping
       all: "all",
     }),
     []
@@ -294,6 +301,12 @@ export default function AllNews() {
     }
   }, [dispatch, page, hasMore, searchQuery, selectedSection]);
 
+  const handleSummarizeArticle = useCallback((article) => {
+    const textToSummarize = `${article.title}\n\n${article.description || ""}`;
+    setArticleToSummarize(textToSummarize);
+    setIsSummarizeModalOpen(true);
+  }, []);
+
   const isTopStoriesSection = selectedSection === "Top Stories";
 
   return (
@@ -410,12 +423,12 @@ export default function AllNews() {
             >
               <option value="all">All Sections</option>
               <option value="Top Stories">🔥 Top Stories (Ranked)</option>
-              <option value="MORE TO EXPLORE">MORE TO EXPLORE</option>
+              <option value="World">World</option>
               <option value="MOST WATCHED">MOST WATCHED</option>
               <option value="Technology">Technology</option>
-              <option value="politics">Politics</option>
-              <option value="TRENDING">TRENDING</option>
-              <option value="Sport">Sport</option>
+              <option value="Politics">Politics</option>
+              <option value="Trending">Trending</option>
+              <option value="Sports">Sports</option>
               <option value="Opinion">Opinion</option>
               <option value="Culture">Culture</option>
             </select>
@@ -480,7 +493,7 @@ export default function AllNews() {
         {!loading || page > 1 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {items.map((item, index) => (
+              {items.filter(hasValidImage).map((item, index) => (
                 <article
                   key={`${item.title}-${index}`}
                   className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
@@ -532,9 +545,25 @@ export default function AllNews() {
                         {item.description}
                       </p>
                     )}
-                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                      {item.source && <span>📍 {item.source}</span>}
-                      {item.date && <span>🕒 {item.date}</span>}
+
+                    {/* Article Footer with Metadata and Summarize Button */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        {item.source && <span>📍 {item.source}</span>}
+                        {item.date && <span>🕒 {item.date}</span>}
+                      </div>
+
+                      {/* Summarize Button */}
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSummarizeArticle(item);
+                        }}
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        AI Summarize
+                      </button>
                     </div>
                   </div>
                 </article>
@@ -628,6 +657,16 @@ export default function AllNews() {
         {/* Intersection Observer Target */}
         <div ref={observerTarget} className="h-10" />
       </main>
+
+      {/* Summarize Modal */}
+      <SummarizeModal
+        isOpen={isSummarizeModalOpen}
+        onClose={() => {
+          setIsSummarizeModalOpen(false);
+          setArticleToSummarize(null);
+        }}
+        initialText={articleToSummarize || ""}
+      />
     </div>
   );
 }

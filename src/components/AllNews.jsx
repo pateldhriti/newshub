@@ -19,6 +19,8 @@ import {
   AlertCircle,
   CheckCircle,
   Sparkles,
+  Volume2,
+  VolumeX,
 } from "lucide-react";
 import {
   fetchAllNews,
@@ -33,6 +35,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import SummarizeModal from "./SummarizeModal";
 import { hasValidImage } from "../utils/imageHelpers";
+import { useSpeech } from "../hooks/useSpeech";
 
 export default function AllNews() {
   const dispatch = useDispatch();
@@ -62,6 +65,10 @@ export default function AllNews() {
   const [spellCheckSuggestion, setSpellCheckSuggestion] = useState(null);
   const [showSpellCheck, setShowSpellCheck] = useState(false);
   const spellCheckTimeoutRef = useRef(null);
+
+  // Text-to-speech
+  const { speak, stop, isSpeaking } = useSpeech();
+  const [speakingArticleId, setSpeakingArticleId] = useState(null);
 
   const SECTION_MAP = useMemo(
     () => ({
@@ -560,14 +567,14 @@ export default function AllNews() {
                       </p>
                     )}
 
-                    {/* Article Footer with Metadata and Summarize Button */}
+                    {/* Article Footer with Metadata and Buttons */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                         {item.source && <span>📍 {item.source}</span>}
                         {item.date && <span>🕒 {item.date}</span>}
                       </div>
 
-                      {/* Summarize Button */}
+                      {/* Summarize Button - Full Width */}
                       <button
                         onClick={(e) => {
                           e.preventDefault();
@@ -578,6 +585,37 @@ export default function AllNews() {
                         <Sparkles className="w-4 h-4" />
                         AI Summarize
                       </button>
+
+                      {/* Text-to-Speech Icon Button - Centered */}
+                      <div className="flex justify-center">
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const articleId = item.title;
+                            const isCurrentlySpeaking = speakingArticleId === articleId && isSpeaking;
+
+                            if (isCurrentlySpeaking) {
+                              stop();
+                              setSpeakingArticleId(null);
+                            } else {
+                              const textToSpeak = `${item.title}. ${item.description || ''}`;
+                              speak(textToSpeak);
+                              setSpeakingArticleId(articleId);
+                            }
+                          }}
+                          className={`p-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-md ${speakingArticleId === item.title && isSpeaking
+                            ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white hover:from-red-700 hover:to-orange-700'
+                            : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600'
+                            }`}
+                          title={speakingArticleId === item.title && isSpeaking ? "Stop reading" : "Listen to article"}
+                        >
+                          {speakingArticleId === item.title && isSpeaking ? (
+                            <VolumeX className="w-5 h-5" />
+                          ) : (
+                            <Volume2 className="w-5 h-5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </article>

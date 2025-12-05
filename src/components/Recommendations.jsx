@@ -67,7 +67,7 @@ export default function Recommendations() {
                     <div className="flex items-center gap-2">
                         <TrendingUp className="w-5 h-5 text-purple-600" />
                         <p className="text-purple-800 dark:text-purple-300 font-medium">
-                            AI-powered recommendations tailored to your interests
+                            Smart recommendations tailored to your interests
                         </p>
                     </div>
                 </div>
@@ -139,11 +139,7 @@ export default function Recommendations() {
                                             <Newspaper className="w-16 h-16 text-slate-400" />
                                         </div>
                                     )}
-                                    {/* AI Badge on image */}
-                                    <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                        <Sparkles className="w-3 h-3" />
-                                        AI Pick
-                                    </div>
+                                    {/* AI Badge removed */}
                                 </div>
 
                                 {/* Content */}

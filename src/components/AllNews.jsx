@@ -317,9 +317,8 @@ export default function AllNews() {
           <p className="text-slate-600 dark:text-slate-400">
             {isTopStoriesSection
               ? "Discover the most relevant and trending news articles ranked by importance"
-              : `Browse ${
-                  selectedSection !== "all" ? selectedSection : "all"
-                } news articles with search and filters`}
+              : `Browse ${selectedSection !== "all" ? selectedSection : "all"
+              } news articles with search and filters`}
           </p>
         </div>
 
@@ -337,34 +336,33 @@ export default function AllNews() {
               className="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            {/* Spell Check Suggestion (Google-like "Did you mean?") */}
-            {showSpellCheck && spellCheckSuggestion && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg shadow-md p-3">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
-                      Did you mean:
-                    </p>
-                    <button
-                      onClick={() =>
-                        handleSpellCheckCorrection(
-                          spellCheckSuggestion.corrected
-                        )
-                      }
-                      className="text-blue-600 dark:text-blue-400 hover:underline font-semibold text-sm mt-1"
-                    >
-                      {spellCheckSuggestion.corrected}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
 
-            {/* Autocomplete Suggestions Dropdown */}
-            {showSuggestions && suggestions.length > 0 && (
-              <ul className="absolute top-full left-0 right-0 z-40 bg-white dark:bg-slate-800 border border-t-0 border-slate-300 dark:border-slate-700 rounded-b-lg shadow-lg overflow-y-auto max-h-60">
-                {suggestions.slice(0, 4).map((suggestion, index) => {
+            {/* Unified Autocomplete and Spell Check Dropdown */}
+            {(showSuggestions && suggestions.length > 0) || (showSpellCheck && spellCheckSuggestion) ? (
+              <ul className="absolute top-full left-0 right-0 z-50 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg shadow-lg overflow-y-auto max-h-60 mt-1">
+                {/* Spell Check "Did you mean?" as first item */}
+                {showSpellCheck && spellCheckSuggestion && (
+                  <li
+                    onClick={() => handleSpellCheckCorrection(spellCheckSuggestion.corrected)}
+                    className="px-4 py-3 cursor-pointer bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 border-b border-blue-200 dark:border-blue-800 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">
+                          Did you mean:
+                        </p>
+                        <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                          {spellCheckSuggestion.corrected}
+                        </span>
+                      </div>
+                      <CheckCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    </div>
+                  </li>
+                )}
+
+                {/* Autocomplete Suggestions */}
+                {showSuggestions && suggestions.length > 0 && suggestions.slice(0, 4).map((suggestion, index) => {
                   const term =
                     typeof suggestion === "string"
                       ? suggestion
@@ -376,11 +374,10 @@ export default function AllNews() {
                     <li
                       key={index}
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className={`px-4 py-3 cursor-pointer transition-colors flex items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 last:border-b-0 ${
-                        selectedSuggestionIndex === index
-                          ? "bg-blue-100 dark:bg-blue-900/40"
-                          : "hover:bg-slate-100 dark:hover:bg-slate-700"
-                      }`}
+                      className={`px-4 py-3 cursor-pointer transition-colors flex items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-700 last:border-b-0 ${selectedSuggestionIndex === index
+                        ? "bg-blue-100 dark:bg-blue-900/40"
+                        : "hover:bg-slate-100 dark:hover:bg-slate-700"
+                        }`}
                     >
                       <div className="flex items-center gap-2 flex-1">
                         <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
@@ -400,7 +397,7 @@ export default function AllNews() {
                   );
                 })}
               </ul>
-            )}
+            ) : null}
           </div>
 
           {/* Category Filter */}

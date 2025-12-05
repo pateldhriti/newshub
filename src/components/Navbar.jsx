@@ -3,13 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedSection } from "../features/news/allNewsSlice";
 import { logout } from "../features/auth/authSlice";
-import { User, LogOut } from "lucide-react";
+import { User, LogOut, Moon, Sun } from "lucide-react";
 
 function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Initialize from localStorage or system preference
+    const saved = localStorage.getItem('darkMode');
+    if (saved !== null) return saved === 'true';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const dropdownRef = useRef(null);
 
   // Close dropdown when clicking outside
@@ -23,6 +29,16 @@ function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Apply dark mode
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', isDarkMode.toString());
+  }, [isDarkMode]);
 
   const handleLogout = () => {
     setIsDropdownOpen(false);
@@ -40,8 +56,12 @@ function Navbar() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <nav className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="text-blue-600">
@@ -58,11 +78,11 @@ function Navbar() {
               />
             </svg>
           </div>
-          <h1 className="text-xl font-bold">NewsToday</h1>
+          <h1 className="text-xl font-bold text-gray-900">NewsToday</h1>
 
           {/* Auth Section - Moved to Left (Removed) */}
 
-          <nav className="hidden md:flex items-center gap-6 ml-6 text-sm">
+          <nav className="hidden md:flex items-center gap-6 ml-6 text-sm text-gray-700">
             <Link to="/" className="hover:text-blue-600 transition-colors">
               Home
             </Link>
@@ -110,6 +130,19 @@ function Navbar() {
             </button>
           </nav>
         </div>
+
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+          aria-label="Toggle dark mode"
+        >
+          {isDarkMode ? (
+            <Sun size={20} className="text-yellow-500" />
+          ) : (
+            <Moon size={20} className="text-gray-700" />
+          )}
+        </button>
 
         {/* Auth Section - Moved to Right */}
         <div className="flex items-center gap-3">

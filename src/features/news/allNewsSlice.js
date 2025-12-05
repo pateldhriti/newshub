@@ -7,7 +7,7 @@ export const fetchSuggestions = createAsyncThunk(
   async (prefix, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/search-suggest",
+        "http://localhost:8080/api/search-autocomplete",
         prefix,
         { headers: { "Content-Type": "text/plain" } }
       );
@@ -29,7 +29,7 @@ export const incrementSearchFrequency = createAsyncThunk(
       }
 
       await axios.post(
-        "http://localhost:8080/api/search-increment",
+        "http://localhost:8080/api/search-autocomplete/increment",
         term.trim(),
         { headers: { "Content-Type": "text/plain" } }
       );
